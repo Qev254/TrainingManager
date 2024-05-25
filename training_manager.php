@@ -1,83 +1,34 @@
 <?php
+/*
+Plugin Name: Training Manager
+Description: Custom plugin to manage training proposals and events with user roles.
+Version: 1.0
+Author: Kelvin Karanja
+*/
+
 // Prevent direct access
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Add custom roles
-function tm_add_custom_user_roles() {
-    add_role(
-        'training_organizer',
-        __('Training Organizer', 'training-manager'),
-        array(
-            'read' => true,
-            'edit_posts' => true,
-            'edit_training_proposals' => true,
-            'edit_others_training_proposals' => true,
-            'publish_training_proposals' => true,
-            'delete_training_proposals' => true,
-            'delete_others_training_proposals' => true,
-            'read_private_training_proposals' => true,
-            'edit_training_events' => true,
-            'edit_others_training_events' => true,
-            'publish_training_events' => true,
-            'delete_training_events' => true,
-            'delete_others_training_events' => true,
-            'read_private_training_events' => true,
-        )
-    );
+// Include necessary files
+require_once plugin_dir_path(__FILE__) . 'includes/user-roles.php';
+require_once plugin_dir_path(__FILE__) . 'includes/cpt.php';
+require_once plugin_dir_path(__FILE__) . 'includes/functions.php';
+require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
-    add_role(
-        'training_coordinator',
-        __('Training Coordinator', 'training-manager'),
-        array(
-            'read' => true,
-            'edit_posts' => true,
-            'edit_training_proposals' => true,
-            'edit_others_training_proposals' => true,
-            'publish_training_proposals' => true,
-            'delete_training_proposals' => true,
-            'delete_others_training_proposals' => true,
-            'read_private_training_proposals' => true,
-            'edit_training_events' => true,
-            'edit_others_training_events' => true,
-            'publish_training_events' => true,
-            'delete_training_events' => true,
-            'delete_others_training_events' => true,
-            'read_private_training_events' => true,
-        )
-    );
+// Register activation hook to ensure roles are created upon plugin activation
+register_activation_hook(__FILE__, 'tm_activate_plugin');
 
-    add_role(
-        'world_zone_leader',
-        __('World Zone Leader', 'training-manager'),
-        array(
-            'read' => true,
-            'edit_posts' => true,
-            'edit_training_proposals' => true,
-            'edit_others_training_proposals' => true,
-            'publish_training_proposals' => true,
-            'delete_training_proposals' => true,
-            'delete_others_training_proposals' => true,
-            'read_private_training_proposals' => true,
-            'edit_training_events' => true,
-            'edit_others_training_events' => true,
-            'publish_training_events' => true,
-            'delete_training_events' => true,
-            'delete_others_training_events' => true,
-            'read_private_training_events' => true,
-        )
-    );
+function tm_activate_plugin() {
+    tm_add_custom_user_roles();
+    tm_register_cpts();
+    flush_rewrite_rules();
 }
 
-add_action('init', 'tm_add_custom_user_roles');
+// Register deactivation hook to clean up
+register_deactivation_hook(__FILE__, 'tm_deactivate_plugin');
 
-// Remove custom roles on plugin deactivation
-function tm_remove_custom_user_roles() {
-    remove_role('training_organizer');
-    remove_role('training_coordinator');
-    remove_role('world_zone_leader');
+function tm_deactivate_plugin() {
+    flush_rewrite_rules();
 }
-
-register_deactivation_hook(__FILE__, 'tm_remove_custom_user_roles');
-?>
