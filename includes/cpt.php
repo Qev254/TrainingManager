@@ -1,9 +1,4 @@
 <?php
-// Prevent direct access
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
 // Register Custom Post Types
 function tm_register_cpts() {
     // Register Training Proposal CPT
@@ -25,12 +20,12 @@ function tm_register_cpts() {
         'label' => __('Training Proposal', 'training-manager'),
         'labels' => $proposal_labels,
         'supports' => array('title', 'editor', 'custom-fields'),
-        'public' => false,
+        'public' => true,
         'show_ui' => true,
         'show_in_menu' => true,
         'menu_position' => 5,
-        'has_archive' => false,
-        'exclude_from_search' => true,
+        'has_archive' => true,
+        'exclude_from_search' => false,
         'capability_type' => array('training_proposal', 'training_proposals'),
         'map_meta_cap' => true,
     );
@@ -66,3 +61,5 @@ function tm_register_cpts() {
     );
     register_post_type('training_event', $event_args);
 }
+
+add_action('init', 'tm_register_cpts');
