@@ -146,4 +146,3 @@ function tm_event_list_shortcode() {
     return ob_get_clean();
 }
 ?>
-
